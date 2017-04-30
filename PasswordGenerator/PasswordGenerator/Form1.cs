@@ -2,6 +2,8 @@
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Net;
 
 namespace PasswordGenerator
 {
@@ -10,8 +12,8 @@ namespace PasswordGenerator
         public Form1()
         {
             InitializeComponent();
-            MessageBox.Show(symbols.ToString());
         }
+
         char[] letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray(); //Symbols of alphabet
         char[] symbols = @"!@#$%&-_?".ToCharArray();
         private string newgenPassword(bool upper, bool numbers, bool symbol, int amount)
@@ -130,6 +132,61 @@ namespace PasswordGenerator
               
                 this.symbols = sf.textBox1.Text.ToCharArray();
             }
+        }
+        private void CheckForUpdates()
+        {
+            try
+            {
+                HttpWebResponse res = (HttpWebResponse)HttpWebRequest.Create("http://sumjest.ru/programsinfo/programs.txt").GetResponse();
+                var encoding = ASCIIEncoding.ASCII;
+                using (var reader = new StreamReader(res.GetResponseStream(), encoding))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        string[] linea = line.Split(';');
+
+                        if (line.Split(';')[0].Contains("PasswordGenerator"))
+                        {
+                            Version v;
+                            if (Version.TryParse(line.Split(';')[1], out v)) { if (v.CompareTo(Version.Parse(Application.ProductVersion)) > 0) { menuStrip1.Items.Add("Вышла новая версия программы!", null, onNewClick); } }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void onNewClick(object sender, EventArgs e)
+        {
+            GetChangeLog();
+        }
+        private void GetChangeLog()
+        {
+            HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create("http://sumjest.ru/index/password_generator/0-8");
+            proxy_request.Method = "GET";
+            proxy_request.Timeout = 20000;
+            HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
+            string html = "";
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream(), Encoding.UTF8))
+                html = sr.ReadToEnd();
+            string a = Regex.Match(html, @"<!--Dangerous--><p>Change log:([\s\S]*)\<!--Dangerous-->").ToString();
+            a = a.Replace("<!--Dangerous-->", "");
+            a = a.Replace("<p>", "");
+            a = a.Replace("</p>", "");
+            a = a.Replace("<br />", "");
+            a = a.Replace("&nbsp;", "  ");
+            MessageBox.Show(a);
+
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            CheckForUpdates();
         }
     }
 }
