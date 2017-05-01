@@ -3,11 +3,15 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace PasswordGenerator
 {
     public partial class KeyForm : Form
     {
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+        public static extern short GetKeyState(int keyCode);
+
         string path = "";
         byte[] file;
         bool isSave;
@@ -134,6 +138,32 @@ namespace PasswordGenerator
         private void KeyForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) { button1_Click(null, null); }
+        }
+
+        private void button2_MouseDown(object sender, MouseEventArgs e)
+        {
+            textBox1.PasswordChar = default(char);
+        }
+
+        private void button2_MouseUp(object sender, MouseEventArgs e)
+        {
+            textBox1.PasswordChar = '•';
+        }
+
+        private void button3_MouseDown(object sender, MouseEventArgs e)
+        {
+            textBox2.PasswordChar = default(char);
+        }
+
+        private void button3_MouseUp(object sender, MouseEventArgs e)
+        {
+            textBox2.PasswordChar = '•';
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            label8.ForeColor = (((ushort)GetKeyState(0x90)) & 0xffff) == 0 ? Color.Black : Color.LimeGreen;
+            label9.ForeColor = (((ushort)GetKeyState(0x14)) & 0xffff) == 0 ? Color.Black : Color.LimeGreen;
         }
     }
 }
