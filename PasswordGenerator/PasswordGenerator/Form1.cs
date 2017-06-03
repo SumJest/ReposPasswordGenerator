@@ -188,5 +188,10 @@ namespace PasswordGenerator
         {
             CheckForUpdates();
         }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new OpenForm().ShowDialog(this);
+        }
     }
 }
