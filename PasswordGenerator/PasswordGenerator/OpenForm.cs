@@ -16,6 +16,7 @@ namespace PasswordGenerator
     {
         public OpenForm()
         {
+            TopMost = true;
             InitializeComponent();
             
         }
@@ -35,7 +36,7 @@ namespace PasswordGenerator
             }
             label2.BackColor = Control;
             
-            System.Diagnostics.Process.Start(Application.ExecutablePath, filedrop[0]);
+            System.Diagnostics.Process.Start(Application.ExecutablePath, "\"" + filedrop[0]+ "\"");
             this.Close();
         }
 
@@ -84,9 +85,14 @@ namespace PasswordGenerator
             DialogResult dr = ofd.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {
-                System.Diagnostics.Process.Start(Application.ExecutablePath, ofd.FileName);
+                System.Diagnostics.Process process = System.Diagnostics.Process.Start(Application.ExecutablePath, "\"" + ofd.FileName + "\"");
                 this.Close();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
