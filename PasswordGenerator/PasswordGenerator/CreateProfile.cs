@@ -29,11 +29,15 @@ namespace PasswordGenerator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrEmpty(textBox2.Text))
+            if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) && System.IO.Directory.Exists(textBox2.Text))
             {
                 new IniFile("Configuration\\settings.ini").Write(textBox1.Text, "workpath", textBox2.Text);
                 DialogResult = DialogResult.OK;
                 Close();
+            }
+            else
+            {
+                MessageBox.Show("Введите корректные данные!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

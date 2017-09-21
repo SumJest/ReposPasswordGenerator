@@ -28,7 +28,8 @@ namespace PasswordGenerator
                 MessageBox.Show("Указанного пути не существует!\nВыбере новый", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 while (true)
                 {
-                    
+                    Settings settings = new Settings();
+                    if (settings.ShowDialog() == DialogResult.OK) { workpath = settings.workpath; config.Write(profile, "workpath", workpath); break; }
                 }
             }
             InitializeComponent();
@@ -106,13 +107,13 @@ namespace PasswordGenerator
                 return;
             }
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.InitialDirectory = Application.StartupPath;
+            sfd.InitialDirectory = workpath;
             string filename = "password.password";
-            if (File.Exists(Application.StartupPath + @"\" + filename))
+            if (File.Exists(workpath + @"\" + filename))
             {
                 for (int i = 1; i < int.MaxValue; i++)
                 {
-                    if (File.Exists(Application.StartupPath + @"\" + getNumFileName(filename, i)))
+                    if (File.Exists(workpath + @"\" + getNumFileName(filename, i)))
                     {
                         continue;
                     }
@@ -130,12 +131,28 @@ namespace PasswordGenerator
             sfd.Filter = "Password files | *.password";
             sfd.DefaultExt = "password";
 
-            DialogResult result = sfd.ShowDialog();
-
-            if (result == DialogResult.OK)
+            while(true)
             {
-                string path = sfd.FileName;
-                new KeyForm(path, Encoding.ASCII.GetBytes(textBox1.Text), true).ShowDialog();
+                sfd.FileName = filename;
+                DialogResult result = sfd.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    if (!Path.GetDirectoryName(sfd.FileName).Equals(workpath))
+                    {
+                        DialogResult res = MessageBox.Show("Вы уверены, что хотите сохранить файл вне рабочей папки?\nВ этом случае вы не сможете синхронизировать пароли с гугл-диском!", "Хотите продолжить?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+                        if (res == DialogResult.Yes) { new KeyForm(sfd.FileName, Encoding.ASCII.GetBytes(textBox1.Text), true).ShowDialog(); return; }
+                        else if (res == DialogResult.No) continue;
+                        else return; 
+
+                   }
+                    string path = sfd.FileName;
+                    new KeyForm(path, Encoding.ASCII.GetBytes(textBox1.Text), true).ShowDialog();
+                }
+                else
+                {
+                    return;
+                }
             }
 
         }
@@ -228,12 +245,30 @@ namespace PasswordGenerator
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           drive = new GoogleDrive();
+           drive = new GoogleDrive(profile);
+            uploadToolStripMenuItem.Enabled = true;
+            downloadToolStripMenuItem.Enabled = true;
         }
 
-        private void SyncToolStripMenuItem_Click(object sender, EventArgs e)
+        private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            DialogResult res =MessageBox.Show("Вы уверены, что хотите скачать все пароли с диска?\nВ этом случае, пароли с одинаковыми именами будут заменяться скаченными!", "Осторожно!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (res == DialogResult.Yes)
+            {
+                drive.Download(workpath);
+                MessageBox.Show("Файлы успешно скачены!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
+
+        private void uploadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Вы уверены, что хотите загрузить все пароли на диск?\nВ этом случае, пароли с одинаковыми именами будут заменяться вашими!", "Осторожно!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (res == DialogResult.Yes)
+            {
+                drive.Upload(workpath);
+                MessageBox.Show("Файлы успешно скачены!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

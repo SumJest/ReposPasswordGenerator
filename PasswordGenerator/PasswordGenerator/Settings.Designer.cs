@@ -36,37 +36,39 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(165, 85);
+            this.button1.Location = new System.Drawing.Point(181, 76);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "Готово";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(321, 47);
+            this.button2.Location = new System.Drawing.Point(327, 42);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(8, 8);
+            this.button2.Size = new System.Drawing.Size(81, 20);
             this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
+            this.button2.Text = "Обзор";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(165, 42);
+            this.textBox1.Location = new System.Drawing.Point(110, 42);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.Size = new System.Drawing.Size(211, 20);
             this.textBox1.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(29, 42);
+            this.label1.Location = new System.Drawing.Point(27, 45);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
+            this.label1.Text = "Рабочий путь:";
             // 
             // Settings
             // 
