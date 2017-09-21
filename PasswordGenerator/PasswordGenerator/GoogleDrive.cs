@@ -153,7 +153,11 @@ namespace PasswordGenerator
             for ( int i = 0; i < files.Count; i ++)
             {
                 Google.Apis.Drive.v3.Data.File file = files[i];
-                if (file.Parents == new List<string> { folderId })
+                foreach (string parent in service.Files.Get(file.Id).Execute().Parents)
+                {
+                    Console.WriteLine(parent);
+                }
+                if (file.Parents[0] ==  folderId)
                 {
                     DownloadFileFromDrive(file.Id, workpath + "\\" + file.Name);
                 }
