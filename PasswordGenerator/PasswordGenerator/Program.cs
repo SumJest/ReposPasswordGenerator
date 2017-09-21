@@ -33,6 +33,7 @@ namespace PasswordGenerator
                 if (pc.ShowDialog() == DialogResult.OK)
                 {
                     Application.EnableVisualStyles();
+
                     Application.Run(new Form1(pc.profile));
                 }
                 

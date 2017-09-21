@@ -27,11 +27,29 @@ namespace PasswordGenerator
         {
             this.profile = profile;
             Console.Write("Loading credentials of profile: {0}...", profile);
+            Console.WriteLine("");
             credential = GetUserCredential();
             Console.WriteLine("Credentials loaded. Loading DriveService...");
             service = GetDriveService();
             Console.WriteLine("DriveService loaded.");
-            Update();
+            Console.WriteLine("Loading list of items...");
+            IList<Google.Apis.Drive.v3.Data.File> items = service.Files.List().Execute().Files;
+            Console.WriteLine("List of items loaded. Sorting...");
+            foreach (var file in items)
+            {
+                if (file.MimeType == "application/vnd.google-apps.folder") folders.Add(file);
+                files.Add(file);
+            }
+            Console.WriteLine("Sorted.");
+            bool contains = false;
+            foreach (var file in folders) { if (file.Name == "Passwords") { contains = true; folderId = file.Id; } break; }
+            if (!contains)
+            {
+                Console.WriteLine("Creating folder \"Passwords\"...");
+                if (!string.IsNullOrEmpty(CreateFolder("Passwords"))) Console.WriteLine("Folder created.");
+                else Console.WriteLine("Error. Folder not created!");
+            }
+            Console.WriteLine("Folder id: " + folderId);
         }
         public void Update()
         {
@@ -41,20 +59,9 @@ namespace PasswordGenerator
             foreach (var file in items)
             {
                 if (file.MimeType == "application/vnd.google-apps.folder") folders.Add(file);
-                else if (file.MimeType == "application/vnd.google-apps.file") files.Add(file);
+                files.Add(file);
             }
             Console.WriteLine("Sorted.");
-        }
-        public void Sync(string workpath)
-        {
-            bool contains = false;
-            foreach (var file in folders) { if (file.Name == "Passwords") { contains = true; folderId = file.Id; } break; }
-            if (!contains)
-            {
-                Console.WriteLine("Creating folder \"Passwords\"...");
-                if (!string.IsNullOrEmpty(CreateFolder("Passwords"))) Console.WriteLine("Folder created.");
-                else Console.WriteLine("Error. Folder not created!");
-            }
         }
         private string CreateFolder(string folderName)
         {
@@ -142,6 +149,7 @@ namespace PasswordGenerator
         {
             Console.WriteLine("Download started!");
             Update();
+            Console.WriteLine(files.Count.ToString());
             for ( int i = 0; i < files.Count; i ++)
             {
                 Google.Apis.Drive.v3.Data.File file = files[i];
@@ -169,9 +177,11 @@ namespace PasswordGenerator
                     if (Path.GetFileName(filess[i]).Equals(file.Name)) { service.Files.Delete(file.Id); }
                 }
             }
-            foreach (string file in filess)
+            for (int i = 0; i < filess.Length; i ++)
             {
-                UploadFileToDrive(file, );
+                UploadFileToDrive(filess[i], "");
+                Console.Write("{0}/{1}", i+1, filess.Length);
+                Console.WriteLine("");
             }
             Console.WriteLine("Uploading complete!");
         }
