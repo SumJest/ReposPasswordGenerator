@@ -9,13 +9,45 @@ namespace PasswordGenerator
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
         char[] letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray(); //Symbols of alphabet
         char[] symbols = @"!@#$%&-_?".ToCharArray();
+        GoogleDrive drive;
+        IniFile config;
+        public string workpath;
+        public string profile;
+
+        public Form1(string profile)
+        {
+            config = new IniFile(Application.StartupPath + "\\Configuration\\settings.ini");
+            bool contains = false;
+            foreach (string prof in config.GetSectionNames()) { if (prof.Equals(profile)) { contains = true; break; } }
+            if (!contains) { MessageBox.Show("Профиль не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error); Application.Exit(); }
+            workpath = config.ReadINI(profile, "workpath");
+            if (!Directory.Exists(workpath))
+            {
+                MessageBox.Show("Указанного пути не существует!\nВыбере новый", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                while (true)
+                {
+                    
+                }
+            }
+            InitializeComponent();
+            
+
+            label3.Text = profile;
+            this.profile = profile;
+            ValidConfig();
+
+            Console.WriteLine(workpath);
+        }
+        public void ValidConfig()
+        {
+
+            if (!config.KeyExists("workpath", profile))
+            {
+                config.Write(profile, "workpath", "");
+            }
+        }
         private string newgenPassword(bool upper, bool numbers, bool symbol, int amount)
         {
             Random rand = new Random();
@@ -192,6 +224,16 @@ namespace PasswordGenerator
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new OpenForm().ShowDialog(this);
+        }
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           drive = new GoogleDrive();
+        }
+
+        private void SyncToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
