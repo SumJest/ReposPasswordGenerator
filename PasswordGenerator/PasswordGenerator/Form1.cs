@@ -18,7 +18,7 @@ namespace PasswordGenerator
 
         public Form1(string profile)
         {
-            config = new IniFile(Application.StartupPath + "\\Configuration\\settings.ini");
+            config = new IniFile(Application.StartupPath + "\\config\\settings.ini");
             bool contains = false;
             foreach (string prof in config.GetSectionNames()) { if (prof.Equals(profile)) { contains = true; break; } }
             if (!contains) { MessageBox.Show("Профиль не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error); Application.Exit(); }
@@ -148,6 +148,7 @@ namespace PasswordGenerator
                    }
                     string path = sfd.FileName;
                     new KeyForm(path, Encoding.ASCII.GetBytes(textBox1.Text), true).ShowDialog();
+                    return;
                 }
                 else
                 {
@@ -217,7 +218,7 @@ namespace PasswordGenerator
         }
         private void GetChangeLog()
         {
-            HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create("http://sumjest.ru/index/password_generator/0-8");
+            HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create("http://sumjest.ru/index/pg/0-8");
             proxy_request.Method = "GET";
             proxy_request.Timeout = 20000;
             HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
@@ -248,6 +249,7 @@ namespace PasswordGenerator
            drive = new GoogleDrive(profile);
             uploadToolStripMenuItem.Enabled = true;
             downloadToolStripMenuItem.Enabled = true;
+            syncToolStripMenuItem.Enabled = true;
         }
 
         private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -267,7 +269,27 @@ namespace PasswordGenerator
             if (res == DialogResult.Yes)
             {
                 drive.Upload(workpath);
-                MessageBox.Show("Файлы успешно скачены!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Файлы успешно закачены!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void syncToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Вы уверены, что хотите синхронизировать все пароли?", "Осторожно!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (res == DialogResult.Yes)
+            {
+                drive.Download(workpath);
+                drive.Upload(workpath);
+                MessageBox.Show("Файлы успешно синхронизированы!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void workpathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            if (settings.ShowDialog() == DialogResult.OK)
+            {
+                workpath = settings.workpath; config.Write(profile, "workpath", workpath);
             }
         }
     }

@@ -31,7 +31,7 @@ namespace PasswordGenerator
         {
             if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) && System.IO.Directory.Exists(textBox2.Text))
             {
-                new IniFile("Configuration\\settings.ini").Write(textBox1.Text, "workpath", textBox2.Text);
+                new IniFile("config\\settings.ini").Write(textBox1.Text, "workpath", textBox2.Text);
                 DialogResult = DialogResult.OK;
                 Close();
             }

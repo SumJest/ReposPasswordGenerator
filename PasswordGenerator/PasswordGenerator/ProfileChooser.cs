@@ -19,7 +19,7 @@ namespace PasswordGenerator
         public ProfileChooser()
         {
             InitializeComponent();
-            file = new IniFile("Configuration\\settings.ini");
+            file = new IniFile("config\\settings.ini");
             foreach (string section in file.GetSectionNames()) { comboBox1.Items.Add(section); }
         }
 

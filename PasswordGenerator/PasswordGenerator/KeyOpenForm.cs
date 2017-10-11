@@ -30,7 +30,7 @@ namespace PasswordGenerator
         {
             try
             {
-                RCC4 decrypter = new RCC4(Encoding.ASCII.GetBytes(textBox1.Text));
+                RCC5 decrypter = new RCC5(Encoding.ASCII.GetBytes(textBox1.Text));
                 FileStream openfile = File.OpenRead(path);
                 byte[] dfile = new byte[openfile.Length];
                 openfile.Read(dfile, 0, dfile.Length);
@@ -43,6 +43,27 @@ namespace PasswordGenerator
             }
             catch (Exception ex)
             {
+                if (ex.Message.Equals("Incorrect key or file corrupted."))
+                {
+                    try
+                    {
+                        RCC4 decrypter = new RCC4(Encoding.ASCII.GetBytes(textBox1.Text));
+                        FileStream openfile = File.OpenRead(path);
+                        byte[] dfile = new byte[openfile.Length];
+                        openfile.Read(dfile, 0, dfile.Length);
+                        openfile.Close();
+                        dfile = decrypter.Decode(dfile);
+                        string text = Encoding.ASCII.GetString(dfile);
+                        if (checkBox1.Checked) Clipboard.SetText(text);
+                        MessageBox.Show((checkBox2.Checked ? "Password: " + text + "\n" : "") + (checkBox1.Checked ? "Password been copied to the clipboard." : ""), "Decrypted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Алгоритм шифрования этого файла устарел и в скором времени его поддержка будет остановлена!\nВо избежании потери пароля, пожалуйста перешифруйте его в этой программе!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        this.Close();
+                    }catch(Exception exc)
+                    {
+                        MessageBox.Show(exc.Message, exc.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

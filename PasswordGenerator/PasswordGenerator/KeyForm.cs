@@ -98,7 +98,7 @@ namespace PasswordGenerator
             {
                 try
                 {
-                    RCC4 crypter = new RCC4(Encoding.ASCII.GetBytes(textBox1.Text));
+                    RCC5 crypter = new RCC5(Encoding.ASCII.GetBytes(textBox1.Text));
                     byte[] efile = crypter.Encode(file);
                     FileStream savefile = File.Create(path);
                     savefile.Write(efile, 0, efile.Length);
