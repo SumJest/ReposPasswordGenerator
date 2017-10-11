@@ -56,7 +56,7 @@ namespace PasswordGenerator
                         string text = Encoding.ASCII.GetString(dfile);
                         if (checkBox1.Checked) Clipboard.SetText(text);
                         MessageBox.Show((checkBox2.Checked ? "Password: " + text + "\n" : "") + (checkBox1.Checked ? "Password been copied to the clipboard." : ""), "Decrypted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        MessageBox.Show("Алгоритм шифрования этого файла устарел и в скором времени его поддержка будет остановлена!\nВо избежании потери пароля, пожалуйста перешифруйте его в этой программе!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Алгоритм шифрования этого файла устарел и в скором времени его поддержка будет остановлена! \nВо избежании потери пароля, пожалуйста перешифруйте его в этой программе!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         this.Close();
                     }catch(Exception exc)
                     {
