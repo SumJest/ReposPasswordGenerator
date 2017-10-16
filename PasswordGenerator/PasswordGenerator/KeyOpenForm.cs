@@ -63,8 +63,8 @@ namespace PasswordGenerator
                         MessageBox.Show(exc.Message, exc.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                else { MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error); }
                 
-                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

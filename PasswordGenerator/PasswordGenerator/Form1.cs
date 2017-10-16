@@ -18,7 +18,8 @@ namespace PasswordGenerator
 
         public Form1(string profile)
         {
-            config = new IniFile(Application.StartupPath + "\\config\\settings.ini");
+            string configpath = "\\config\\settings.ini";
+            config = new IniFile(configpath);
             bool contains = false;
             foreach (string prof in config.GetSectionNames()) { if (prof.Equals(profile)) { contains = true; break; } }
             if (!contains) { MessageBox.Show("Профиль не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error); Application.Exit(); }

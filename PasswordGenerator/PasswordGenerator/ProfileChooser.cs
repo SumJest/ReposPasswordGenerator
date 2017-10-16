@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,16 @@ namespace PasswordGenerator
         public ProfileChooser()
         {
             InitializeComponent();
-            file = new IniFile("config\\settings.ini");
+            string configpath = "\\config\\settings.ini";
+            if (!Directory.Exists(Path.GetDirectoryName(configpath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(configpath));
+            }
+            if (!File.Exists(configpath))
+            {
+                File.Create(configpath);
+            }
+            file = new IniFile(configpath);
             foreach (string section in file.GetSectionNames()) { comboBox1.Items.Add(section); }
         }
 
