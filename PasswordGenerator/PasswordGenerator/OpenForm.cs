@@ -82,6 +82,7 @@ namespace PasswordGenerator
             ofd.Filter = "Password's files | *.password";
             ofd.DefaultExt = ".password";
             ofd.Multiselect = false;
+            ofd.InitialDirectory = IniFile.ReadINI(Form1.Profile, "workpath");
             DialogResult dr = ofd.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {

@@ -1,36 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PasswordGenerator
 {
     public partial class ProfileChooser : Form
     {
-        IniFile file;
+
 
         public string profile = "";
 
         public ProfileChooser()
         {
             InitializeComponent();
-            string configpath = "\\config\\settings.ini";
+            string configpath = Application.StartupPath + "\\config\\settings.ini";
             if (!Directory.Exists(Path.GetDirectoryName(configpath)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(configpath));
             }
             if (!File.Exists(configpath))
             {
-                File.Create(configpath);
+                File.Create(configpath).Close();
             }
-            file = new IniFile(configpath);
-            foreach (string section in file.GetSectionNames()) { comboBox1.Items.Add(section); }
+            IniFile.InitFile(configpath);
+            foreach (string section in IniFile.GetSectionNames()) { comboBox1.Items.Add(section); }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -49,7 +42,7 @@ namespace PasswordGenerator
             if (cp.ShowDialog() == DialogResult.OK)
             {
                 comboBox1.Items.Clear();
-                foreach (string sec in file.GetSectionNames())
+                foreach (string sec in IniFile.GetSectionNames())
                 {
                     comboBox1.Items.Add(sec);
                 }

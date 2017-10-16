@@ -12,32 +12,29 @@ namespace PasswordGenerator
         char[] letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray(); //Symbols of alphabet
         char[] symbols = @"!@#$%&-_?".ToCharArray();
         GoogleDrive drive;
-        IniFile config;
         public string workpath;
-        public string profile;
+        public static string Profile;
 
         public Form1(string profile)
         {
-            string configpath = "\\config\\settings.ini";
-            config = new IniFile(configpath);
             bool contains = false;
-            foreach (string prof in config.GetSectionNames()) { if (prof.Equals(profile)) { contains = true; break; } }
+            foreach (string prof in IniFile.GetSectionNames()) { if (prof.Equals(profile)) { contains = true; break; } }
             if (!contains) { MessageBox.Show("Профиль не найден!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error); Application.Exit(); }
-            workpath = config.ReadINI(profile, "workpath");
+            workpath = IniFile.ReadINI(profile, "workpath");
             if (!Directory.Exists(workpath))
             {
                 MessageBox.Show("Указанного пути не существует!\nВыбере новый", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 while (true)
                 {
                     Settings settings = new Settings();
-                    if (settings.ShowDialog() == DialogResult.OK) { workpath = settings.workpath; config.Write(profile, "workpath", workpath); break; }
+                    if (settings.ShowDialog() == DialogResult.OK) { workpath = settings.workpath; IniFile.Write(profile, "workpath", workpath); break; }
                 }
             }
             InitializeComponent();
             
 
             label3.Text = profile;
-            this.profile = profile;
+            Profile = profile;
             ValidConfig();
 
             Console.WriteLine(workpath);
@@ -45,9 +42,9 @@ namespace PasswordGenerator
         public void ValidConfig()
         {
 
-            if (!config.KeyExists("workpath", profile))
+            if (!IniFile.KeyExists("workpath", Profile))
             {
-                config.Write(profile, "workpath", "");
+                IniFile.Write(Profile, "workpath", "");
             }
         }
         private string newgenPassword(bool upper, bool numbers, bool symbol, int amount)
@@ -247,7 +244,7 @@ namespace PasswordGenerator
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           drive = new GoogleDrive(profile);
+           drive = new GoogleDrive(Profile);
             uploadToolStripMenuItem.Enabled = true;
             downloadToolStripMenuItem.Enabled = true;
             syncToolStripMenuItem.Enabled = true;
@@ -290,7 +287,7 @@ namespace PasswordGenerator
             Settings settings = new Settings();
             if (settings.ShowDialog() == DialogResult.OK)
             {
-                workpath = settings.workpath; config.Write(profile, "workpath", workpath);
+                workpath = settings.workpath; IniFile.Write(Profile, "workpath", workpath);
             }
         }
     }
