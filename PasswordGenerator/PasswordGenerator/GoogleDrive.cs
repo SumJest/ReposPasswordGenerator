@@ -22,28 +22,30 @@ namespace PasswordGenerator
         private DriveService service;
         string profile = "";
         string folderId = "";
+        private Form1 form;
 
-        public GoogleDrive(string profile)
+        public GoogleDrive(string profile, Form1 form)
         {
+            this.form = form;
             this.profile = profile;
             string msg = string.Format("Loading credentials of profile: {0}...", profile);
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             credential = GetUserCredential();
             msg = "Credentials loaded. Loading DriveService...";
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             service = GetDriveService();
             msg = "DriveService loaded.";
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             msg = "Loading list of items...";
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             IList<Google.Apis.Drive.v3.Data.File> items = service.Files.List().Execute().Files;
             msg = "List of items loaded. Sorting...";
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             foreach (var file in items)
             {
                 if (file.MimeType == "application/vnd.google-apps.folder") folders.Add(file);
@@ -51,14 +53,14 @@ namespace PasswordGenerator
             }
             msg = "Complete.";
             Console.WriteLine(msg);
-            Form1.toolStripStatusLabel1.Text = msg;
+            form.toolStripStatusLabel1.Text = msg;
             bool contains = false;
             foreach (var file in folders) { if (file.Name == "Passwords") { contains = true; folderId = file.Id; } break; }
             if (!contains)
             {
                 Console.WriteLine("Creating folder \"Passwords\"...");
-                Form1.toolStripStatusLabel1.Text = "Creating folder \"Passwords\"...";
-                if (!string.IsNullOrEmpty(CreateFolder("Passwords"))) { Console.WriteLine("Folder created."); Form1.toolStripStatusLabel1.Text = "Folder created."; }
+                form.toolStripStatusLabel1.Text = "Creating folder \"Passwords\"...";
+                if (!string.IsNullOrEmpty(CreateFolder("Passwords"))) { Console.WriteLine("Folder created."); form.toolStripStatusLabel1.Text = "Folder created."; }
             else Console.WriteLine("[Error] Folder not created!"); 
             }
             Console.WriteLine("Folder id: " + folderId);
@@ -66,18 +68,18 @@ namespace PasswordGenerator
         public void Update()
         {
             Console.WriteLine("Loading list of items...");
-            Form1.toolStripStatusLabel1.Text = "Loading list of items...";
+            form.toolStripStatusLabel1.Text = "Loading list of items...";
             IList<Google.Apis.Drive.v3.Data.File> items = service.Files.List().Execute().Files;
             files.Clear();
             Console.WriteLine("List of items loaded. Sorting...");
-            Form1.toolStripStatusLabel1.Text = "List of items loaded. Sorting...";
+            form.toolStripStatusLabel1.Text = "List of items loaded. Sorting...";
             foreach (var file in items)
             {
                 if (file.MimeType == "application/vnd.google-apps.folder") folders.Add(file);
                 files.Add(file);
             }
             Console.WriteLine("Sorted " + files.Count + " files");
-            Form1.toolStripStatusLabel1.Text = "Sorted " + files.Count + " files";
+            form.toolStripStatusLabel1.Text = "Sorted " + files.Count + " files";
         }
         private string CreateFolder(string folderName)
         {
@@ -180,10 +182,10 @@ namespace PasswordGenerator
             {
                 DownloadFileFromDrive(list[i].Id, workpath + "\\" + list[i].Name);
                 Console.WriteLine("[Info] Downloading is " + (i + 1) + "/" + list.Count);
-                Form1.toolStripStatusLabel1.Text = "Downloading is " + (i + 1) + "/" + list.Count;
+                form.toolStripStatusLabel1.Text = "Downloading is " + (i + 1) + "/" + list.Count;
             }
             Console.WriteLine("[Info] Download complete!");
-            Form1.toolStripStatusLabel1.Text = "Download complete!";
+            form.toolStripStatusLabel1.Text = "Download complete!";
             }
         public void Upload(string workpath)
         {
@@ -215,10 +217,10 @@ namespace PasswordGenerator
                 UploadFileToDrive(filess[i], "");
                 Console.Write("[Info] Uploading {0}/{1}...", i+1, filess.Length);
                 Console.WriteLine("");
-                Form1.toolStripStatusLabel1.Text = string.Format("Uploading {0}/{1}...", i + 1, filess.Length);
+                form.toolStripStatusLabel1.Text = string.Format("Uploading {0}/{1}...", i + 1, filess.Length);
             }
             Console.WriteLine("[Info] Uploading complete!");
-            Form1.toolStripStatusLabel1.Text = "Uploading complete!";
+            form.toolStripStatusLabel1.Text = "Uploading complete!";
         }
 
     }

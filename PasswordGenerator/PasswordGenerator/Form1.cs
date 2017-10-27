@@ -185,7 +185,10 @@ namespace PasswordGenerator
         {
             try
             {
+                Console.WriteLine("Проверка обновлений...");
+                Console.WriteLine("Создание запроса...");
                 HttpWebResponse res = (HttpWebResponse)HttpWebRequest.Create("http://sumjest.ru/programsinfo/programs.txt").GetResponse();
+                Console.WriteLine("Ответ получен.");
                 var encoding = ASCIIEncoding.ASCII;
                 using (var reader = new StreamReader(res.GetResponseStream(), encoding))
                 {
@@ -197,7 +200,7 @@ namespace PasswordGenerator
                         if (line.Split(';')[0].Contains("PasswordGenerator"))
                         {
                             Version v;
-                            if (Version.TryParse(line.Split(';')[1], out v)) { if (v.CompareTo(Version.Parse(Application.ProductVersion)) > 0) { menuStrip1.Items.Add("Вышла новая версия программы!", null, onNewClick); } }
+                            if (Version.TryParse(line.Split(';')[1], out v)) { if (v.CompareTo(Version.Parse(Application.ProductVersion)) > 0) { Console.Write("Обнаружена более новая версия - {0}.\n", v.ToString()); menuStrip1.Items.Add("Вышла новая версия программы!", null, onNewClick); } }
 
                         }
                     }
@@ -232,10 +235,6 @@ namespace PasswordGenerator
             MessageBox.Show(a);
 
         }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            CheckForUpdates();
-        }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -244,7 +243,7 @@ namespace PasswordGenerator
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           drive = new GoogleDrive(Profile);
+           drive = new GoogleDrive(Profile, this);
             uploadToolStripMenuItem.Enabled = true;
             downloadToolStripMenuItem.Enabled = true;
             syncToolStripMenuItem.Enabled = true;
@@ -289,6 +288,11 @@ namespace PasswordGenerator
             {
                 workpath = settings.workpath; IniFile.Write(Profile, "workpath", workpath);
             }
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            CheckForUpdates();
         }
     }
 }
