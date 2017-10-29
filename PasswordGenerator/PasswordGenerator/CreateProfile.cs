@@ -32,6 +32,7 @@ namespace PasswordGenerator
             if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) && System.IO.Directory.Exists(textBox2.Text))
             {
                 IniFile.Write(textBox1.Text, "workpath", textBox2.Text);
+                Console.WriteLine("Пользователь создан. " + textBox1.Text);
                 DialogResult = DialogResult.OK;
                 Close();
             }

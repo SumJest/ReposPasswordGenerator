@@ -30,12 +30,16 @@ namespace PasswordGenerator
         {
             try
             {
+                Console.WriteLine("Инициализация дешифровчика...");
                 RCC5 decrypter = new RCC5(Encoding.ASCII.GetBytes(textBox1.Text));
+                Console.WriteLine("Готово. Открытие файла...");
                 FileStream openfile = File.OpenRead(path);
                 byte[] dfile = new byte[openfile.Length];
                 openfile.Read(dfile, 0, dfile.Length);
                 openfile.Close();
+                Console.WriteLine("Готово. Дешифровка файла...");
                 dfile = decrypter.Decode(dfile);
+                Console.WriteLine("Готово.");
                 string text = Encoding.ASCII.GetString(dfile);
                 if(checkBox1.Checked)Clipboard.SetText(text);
                 MessageBox.Show((checkBox2.Checked ? "Password: " + text + "\n" : "") + (checkBox1.Checked ? "Password been copied to the clipboard." : ""), "Decrypted", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -43,16 +47,20 @@ namespace PasswordGenerator
             }
             catch (Exception ex)
             {
-                if (ex.Message.Equals("Incorrect key or file corrupted."))
+                if (ex.Message.Equals("Ключ неверный или файл повреждён."))
                 {
                     try
                     {
+                        Console.WriteLine("Инициализация старого дешифровчика...");
                         RCC4 decrypter = new RCC4(Encoding.ASCII.GetBytes(textBox1.Text));
+                        Console.WriteLine("Готово. Открытие файла...");
                         FileStream openfile = File.OpenRead(path);
                         byte[] dfile = new byte[openfile.Length];
                         openfile.Read(dfile, 0, dfile.Length);
                         openfile.Close();
+                        Console.WriteLine("Готово. Дешифровка файла...");
                         dfile = decrypter.Decode(dfile);
+                        Console.WriteLine("Готово.");
                         string text = Encoding.ASCII.GetString(dfile);
                         if (checkBox1.Checked) Clipboard.SetText(text);
                         MessageBox.Show((checkBox2.Checked ? "Password: " + text + "\n" : "") + (checkBox1.Checked ? "Password been copied to the clipboard." : ""), "Decrypted", MessageBoxButtons.OK, MessageBoxIcon.Information);

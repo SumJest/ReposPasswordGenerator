@@ -13,7 +13,7 @@ namespace PasswordGenerator
         {
             if (key.Length < 6)
             {
-                throw new tooShortKeyException("The key length must be equal to or greater than six.");
+                throw new tooShortKeyException("Ключ не может быть короче 6 символов!");
             }
             init(key);
 
@@ -140,7 +140,7 @@ namespace PasswordGenerator
             {
                 if (cipher[indexes[i]] != lol[i])
                 {
-                    throw new InvalidKeyException("Incorrect key or file corrupted.");
+                    throw new InvalidKeyException("Ключ неверный или файл повреждён.");
                 }
             }
             byte[] original = new byte[cipher.Length - lol.Length];

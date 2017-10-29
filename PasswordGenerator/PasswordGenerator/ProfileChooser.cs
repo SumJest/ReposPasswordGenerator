@@ -16,11 +16,14 @@ namespace PasswordGenerator
             string configpath = Application.StartupPath + "\\config\\settings.ini";
             if (!Directory.Exists(Path.GetDirectoryName(configpath)))
             {
+                
                 Directory.CreateDirectory(Path.GetDirectoryName(configpath));
+                Console.WriteLine("Директория: " + Path.GetDirectoryName(configpath) + " создана.");
             }
             if (!File.Exists(configpath))
             {
                 File.Create(configpath).Close();
+                Console.WriteLine("Файл настроек: " + configpath + " создан.");
             }
             IniFile.InitFile(configpath);
             foreach (string section in IniFile.GetSectionNames()) { comboBox1.Items.Add(section); }

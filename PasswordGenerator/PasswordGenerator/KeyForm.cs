@@ -98,11 +98,15 @@ namespace PasswordGenerator
             {
                 try
                 {
+                    Console.WriteLine("Инициализация шифровчика...");
                     RCC5 crypter = new RCC5(Encoding.ASCII.GetBytes(textBox1.Text));
+                    Console.WriteLine("Готово. Шифрование файла...");
                     byte[] efile = crypter.Encode(file);
+                    Console.WriteLine("Готово. Сохранение...");
                     FileStream savefile = File.Create(path);
                     savefile.Write(efile, 0, efile.Length);
                     savefile.Close();
+                    MessageBox.Show("Файл сохранён", "Инфо",MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Close();
                 }
                 catch (Exception ex)

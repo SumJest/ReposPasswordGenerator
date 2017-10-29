@@ -89,14 +89,13 @@ namespace PasswordGenerator
             {
                 lol[i] = key[key.Length - 1 - i];
             }
-            Console.WriteLine(scipher);
             if (scipher.StartsWith(Encoding.ASCII.GetString(lol)))
             {
                 return Encoding.ASCII.GetBytes(scipher.Remove(0, 4));
             }
             else
             {
-                throw new InvalidKeyException("Wrong key for decryption.");
+                throw new InvalidKeyException("Неверный ключ или файл повреждён.");
             }
 
         }

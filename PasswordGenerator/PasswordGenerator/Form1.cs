@@ -31,17 +31,14 @@ namespace PasswordGenerator
                 }
             }
             InitializeComponent();
-            
-
             label3.Text = profile;
             Profile = profile;
             ValidConfig();
-
-            Console.WriteLine(workpath);
+            Console.WriteLine("Программа запущена. Рабочая папка: " + workpath + ". Имя пользователя: " + Profile + ".");
+            CheckForUpdates();
         }
         public void ValidConfig()
         {
-
             if (!IniFile.KeyExists("workpath", Profile))
             {
                 IniFile.Write(Profile, "workpath", "");
@@ -187,7 +184,9 @@ namespace PasswordGenerator
             {
                 Console.WriteLine("Проверка обновлений...");
                 Console.WriteLine("Создание запроса...");
-                HttpWebResponse res = (HttpWebResponse)HttpWebRequest.Create("http://sumjest.ru/programsinfo/programs.txt").GetResponse();
+                HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create("http://sumjest.ru/programsinfo/programs.txt");
+                Console.WriteLine("Запрос отправлен. Ожидание ответа...");
+                HttpWebResponse res = (HttpWebResponse)req.GetResponse();
                 Console.WriteLine("Ответ получен.");
                 var encoding = ASCIIEncoding.ASCII;
                 using (var reader = new StreamReader(res.GetResponseStream(), encoding))
@@ -208,7 +207,15 @@ namespace PasswordGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if(ex is WebException)
+                {
+                    Console.WriteLine("Ошибка подключения. Следующая попытка будет совершена при запуске программы.");
+                }
+                else
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+              
             }
 
         }
@@ -292,7 +299,6 @@ namespace PasswordGenerator
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            CheckForUpdates();
         }
     }
 }
