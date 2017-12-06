@@ -13,9 +13,10 @@ namespace PasswordGenerator
 {
     public partial class Settings : Form
     {
-        public Settings()
+        public Settings(string path)
         {
             InitializeComponent();
+            textBox1.Text = path;
         }
 
         public string workpath;

@@ -26,7 +26,7 @@ namespace PasswordGenerator
                 MessageBox.Show("Указанного пути не существует!\nВыбере новый", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 while (true)
                 {
-                    Settings settings = new Settings();
+                    Settings settings = new Settings(workpath);
                     if (settings.ShowDialog() == DialogResult.OK) { workpath = settings.workpath; IniFile.Write(profile, "workpath", workpath); break; }
                 }
             }
@@ -228,7 +228,7 @@ namespace PasswordGenerator
         {
             HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create("http://sumjest.ru/index/pg/0-8");
             proxy_request.Method = "GET";
-            proxy_request.Timeout = 20000;
+            proxy_request.Timeout = 5000;
             HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
             string html = "";
             using (StreamReader sr = new StreamReader(resp.GetResponseStream(), Encoding.UTF8))
@@ -290,7 +290,7 @@ namespace PasswordGenerator
 
         private void workpathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings settings = new Settings();
+            Settings settings = new Settings(workpath);
             if (settings.ShowDialog() == DialogResult.OK)
             {
                 workpath = settings.workpath; IniFile.Write(Profile, "workpath", workpath);
